@@ -272,7 +272,7 @@
 				return;
 			}
 			
-			if (options.handle && !_closest(originalTarget, options.handle, el)) {
+			if (options.handle && !_closest(originalTarget, options.handle, el) && !options.filter) {
 				return;
 			}
 
