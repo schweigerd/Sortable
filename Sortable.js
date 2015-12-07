@@ -89,7 +89,7 @@
 
 					vx,
 					vy
-				;
+					;
 
 				// Delect scrollEl
 				if (scrollParentEl !== rootEl) {
@@ -163,7 +163,7 @@
 
 			options.groups = ' ' + group.name + (group.put.join ? ' ' + group.put.join(' ') : '') + ' ';
 		}
-	;
+		;
 
 
 
@@ -271,7 +271,7 @@
 			if (!target) {
 				return;
 			}
-			
+
 			if (options.handle && !_closest(originalTarget, options.handle, el) && !options.filter) {
 				return;
 			}
@@ -457,7 +457,7 @@
 
 						target = parent; // store last element
 					}
-					/* jshint boss:true */
+						/* jshint boss:true */
 					while (parent = parent.parentNode);
 				}
 
@@ -591,8 +591,8 @@
 
 			if (activeGroup && !options.disabled &&
 				(isOwner
-					? canSort || (revert = !rootEl.contains(dragEl)) // Reverting item into the original list
-					: activeGroup.pull && groupPut && (
+						? canSort || (revert = !rootEl.contains(dragEl)) // Reverting item into the original list
+						: activeGroup.pull && groupPut && (
 						(activeGroup.name === group.name) || // by Name
 						(groupPut.indexOf && ~groupPut.indexOf(activeGroup.name)) // by Array
 					)
@@ -611,7 +611,8 @@
 
 				if (revert) {
 					_cloneHide(true);
-
+					_onRevert(dragEl,rootEl, options);
+					////
 					if (cloneEl || nextEl) {
 						rootEl.insertBefore(dragEl, cloneEl || nextEl);
 					}
@@ -621,7 +622,6 @@
 
 					return;
 				}
-
 
 				if ((el.children.length === 0) || (el.children[0] === ghostEl) ||
 					(el === evt.target) && (target = _ghostIsLast(el, evt))
@@ -666,7 +666,7 @@
 						nextSibling = target.nextElementSibling,
 						moveVector = _onMove(rootEl, el, dragEl, dragRect, target, targetRect),
 						after
-					;
+						;
 
 					if (moveVector !== false) {
 						_silent = true;
@@ -827,26 +827,26 @@
 
 				// Nulling
 				rootEl =
-				dragEl =
-				parentEl =
-				ghostEl =
-				nextEl =
-				cloneEl =
+					dragEl =
+						parentEl =
+							ghostEl =
+								nextEl =
+									cloneEl =
 
-				scrollEl =
-				scrollParentEl =
+										scrollEl =
+											scrollParentEl =
 
-				tapEvt =
-				touchEvt =
+												tapEvt =
+													touchEvt =
 
-				moved =
-				newIndex =
+														moved =
+															newIndex =
 
-				lastEl =
-				lastCSS =
+																lastEl =
+																	lastCSS =
 
-				activeGroup =
-				Sortable.active = null;
+																		activeGroup =
+																			Sortable.active = null;
 			}
 		},
 
@@ -1145,6 +1145,31 @@
 		el.draggable = false;
 	}
 
+	function _onRevert(dragEl, rootEl, options) {
+		var evt,
+			sortable = rootEl[expando],
+			onRevertFn = sortable.options.onRevert,
+			retVal;
+
+		evt = document.createEvent('Event');
+		evt.initEvent('revert', true, true);
+
+		evt.drag = dragEl;
+		evt.root = rootEl;
+
+		sortable.root = rootEl;
+		sortable.drag = dragEl;
+
+		rootEl.dispatchEvent(evt);
+
+		if (onRevertFn) {
+			retVal = onRevertFn.call(sortable, evt);
+		}
+
+		return retVal;
+
+	}
+
 
 	function _unsilent() {
 		_silent = false;
@@ -1154,7 +1179,7 @@
 	/** @returns {HTMLElement|false} */
 	function _ghostIsLast(el, evt) {
 		var lastEl = el.lastElementChild,
-				rect = lastEl.getBoundingClientRect();
+			rect = lastEl.getBoundingClientRect();
 
 		return ((evt.clientY - (rect.top + rect.height) > 5) || (evt.clientX - (rect.right + rect.width) > 5)) && lastEl; // min delta
 	}
