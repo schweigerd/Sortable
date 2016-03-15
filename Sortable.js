@@ -603,6 +603,7 @@
 
 				if (revert) {
 					_cloneHide(true);
+					_onRevert(dragEl,rootEl, options);
 
 					if (cloneEl || nextEl) {
 						rootEl.insertBefore(dragEl, cloneEl || nextEl);
@@ -1126,6 +1127,27 @@
 		return retVal;
 	}
 
+	function _onRevert(dragEl, rootEl) {
+		var evt,
+			sortable = rootEl[expando],
+			onRevertFn = sortable.options.onRevert,
+			retVal;
+
+		evt = document.createEvent('Event');
+		evt.initEvent('revert', true, true);
+		evt.drag = dragEl;
+		evt.root = rootEl;
+		sortable.root = rootEl;
+		sortable.drag = dragEl;
+
+		rootEl.dispatchEvent(evt);
+
+		if (onRevertFn) {
+			retVal = onRevertFn.call(sortable, evt);
+		}
+
+		return retVal;
+	}
 
 	function _disableDraggable(el) {
 		el.draggable = false;
